@@ -16,22 +16,22 @@ void setup() {
   pinMode(power, OUTPUT);
   digitalWrite(power, LOW);
   Serial.begin(9600);
-  Serial.println("# Setup...");
   while (!Serial) ; // wait for serial
   delay(2000);
+  Serial.println("status setup...");
 
-  Serial.print("Initializing SD card...");
+  Serial.println("status initializing SD card...");
   if (!SD.begin(chipSelect)) {
-    Serial.println("Card failed, or not present");
+    Serial.println("status card failed, or not present");
     // don't do anything more:
     while (1);
   } else {
-    Serial.println("card initialized.");
+    Serial.println("status card initialized.");
   }
 }
 
 void loop() {
-  Serial.print("Reading ");
+  Serial.println("status measuring... ");
   // Switch transistor  
   digitalWrite(power, HIGH);
   delay(300);
@@ -39,14 +39,13 @@ void loop() {
   dataString = "";
   dataString += dt();
   for (int sensorPin = A0; sensorPin <= A3; sensorPin++) {
-    Serial.print(sensorPin);
-    Serial.print("-");
     output_value = analogRead(sensorPin);
     dataString += ',';
     dataString += output_value;
   }
   digitalWrite(power, LOW);
   writeLog(dataString);
+  Serial.print("measurement ");
   Serial.println(dataString);
   delay(300000);
 }
@@ -58,7 +57,7 @@ void writeLog(String dataString) {
     dataFile.println(dataString);
     dataFile.close();
   } else {
-    Serial.println("error opening humino.log");
+    Serial.println("status error opening humino.log");
   }
 }
 
