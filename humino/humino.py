@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from sklearn import linear_model
 from datetime import timedelta
-
+import database
 
 def raw_to_hum(raw):
     def convert_raw_values(v):
@@ -21,7 +21,9 @@ def predict_value(data, target):
     step_width = 5
 
     y = data.values.reshape(-1, 1)[offset:]
-    x = ((data.index -  data.index[offset]) / 300000000000)[offset:].values.reshape(-1, 1).astype('int')
+    index_from_offset = data.index -  data.index[offset]
+    x = (index_from_offset / 300000000000)[offset:] \
+        .values.reshape(-1, 1).astype('int')
 
     regr = linear_model.LinearRegression()
     regr.fit(x, y)
@@ -51,16 +53,14 @@ def make_plot(data):
         left = predict_value(data[data[col].notnull()][col], 40).days
         label = legend.get_texts()[i]
         if left > 0:
-            label.set_text("{} days".format(str(left))
+            label.set_text("{} days".format(str(left)))
         else:
             label.set_text("wet")
     
 
 if __name__ == "__main__":
-    raw = pd.read_csv('data/HUMINO.csv', 
-                    index_col=0, 
-                    parse_dates=True)
-
+    # raw = database.read_data_csv("data/HUMINO.CSV")
+    raw = database.read_data()
     data = raw_to_hum(raw)
     make_plot(data)
     plt.savefig('plot.png')
