@@ -51,7 +51,7 @@ def make_plot(data):
         left = predict_value(data[data[col].notnull()][col], 40).days
         label = legend.get_texts()[i]
         if left > 0:
-            label.set_text(f"{str(left)} days")
+            label.set_text("{} days".format(str(left))
         else:
             label.set_text("wet")
     
