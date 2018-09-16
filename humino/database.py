@@ -4,6 +4,7 @@ import logging
 import sqlite3
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 DB_FILENAME = "../data/db.sqlite"
 
@@ -13,6 +14,8 @@ NAMES = [
     'Blattpflanz',
     'Blattpflanz-2'
 ]
+
+logging.basicConfig(level=logging.DEBUG)
 
 def init_db():
     logging.info("Init db..")
@@ -55,12 +58,14 @@ def import_csv(fn):
     conn.close()
 
 
-def read_data():
+def read_data(date_filter=None):
+    date_filter = date_filter or (datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d %H:%M")
     conn = sqlite3.connect(DB_FILENAME)
-    data = pd.read_sql_query("SELECT * FROM humidity;", conn)
+    data = pd.read_sql_query("SELECT * FROM humidity WHERE dt > '{}';".format(date_filter), conn)
     conn.close()
     data = data.pivot(index='dt', columns='plant', values='value')
     data.index = pd.to_datetime(data.index)
+    print(data.index[-1])
     return data
 
 def read_data_csv(fn):
@@ -71,6 +76,7 @@ def store_measurements(plant, value, dt):
     c = conn.cursor()
     INSERT = "INSERT INTO humidity(plant, value, dt) VALUES (?, ?, ?)"
     rv = c.execute(INSERT, [plant, value, dt])
+    conn.commit()
     conn.close()
     return rv
 
