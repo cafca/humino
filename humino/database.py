@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-DB_FILENAME = "../data/db.sqlite"
+DB_FILENAME = "/home/pi/humino/data/db.sqlite"
 
 NAMES = [
     'Hibiskus',
@@ -65,7 +65,6 @@ def read_data(date_filter=None):
     conn.close()
     data = data.pivot(index='dt', columns='plant', values='value')
     data.index = pd.to_datetime(data.index)
-    print(data.index[-1])
     return data
 
 def read_data_csv(fn):

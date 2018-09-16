@@ -82,6 +82,9 @@ if __name__ == "__main__":
     # raw = database.read_data_csv("data/HUMINO.CSV")
     raw = database.read_data()
     data = raw_to_hum(raw)
-    # logging.info(status_message(data))
+    status = status_message(data)
+    with open("status.txt") as f:
+        f.write(status)
+    logging.info(status)
     make_plot(data)
     plt.savefig('plot.png')
