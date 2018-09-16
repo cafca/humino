@@ -11,8 +11,8 @@ DB_FILENAME = "/home/pi/humino/data/db.sqlite"
 NAMES = [
     'Hibiskus',
     'Walnuss',
-    'Blattpflanz',
-    'Blattpflanz-2'
+    'Dieffenbachia Hoch',
+    'Dieffenbachia Breit'
 ]
 
 logging.basicConfig(level=logging.DEBUG)
