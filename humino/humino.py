@@ -71,7 +71,7 @@ def make_plot(data):
     legend = ax1.legend()
     for i, col in enumerate(data.columns):
         label = legend.get_texts()[i]
-        label.set_text(time_remaining(data, col))
+        label.set_text(config.PLANTS[col][0])
 
 def status_message(data):
     rv = "Current estimates\n"
