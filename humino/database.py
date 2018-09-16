@@ -8,20 +8,13 @@ from datetime import datetime, timedelta
 
 import config
 
-NAMES = [
-    'Hibiskus',
-    'Walnuss',
-    'Dieffenbachia Hoch',
-    'Dieffenbachia Breit'
-]
-
 DB_FILENAME = os.path.join(config.OUT_FOLDER, "db.sqlite")
 
 logging.basicConfig(level=logging.DEBUG)
 
 def init_db():
     logging.info("Init db..")
-    conn = sqlite3.connect(DB_FILENAME
+    conn = sqlite3.connect(DB_FILENAME)
     c = conn.cursor()
     CREATE_TABLES = '''CREATE TABLE humidity (
         id INTEGER PRIMARY KEY NOT NULL,
