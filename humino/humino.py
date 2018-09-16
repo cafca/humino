@@ -75,7 +75,7 @@ def status_message(data):
     vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
     for plant, rem in sorted(vals, key=lambda tup: tup[1]):
         rv += "  {:<16}{} ({:.2f}%)\n".format(
-            database.NAMES[int(plant)], rem, data[plant][-1])
+            config.NAMES[int(plant)], rem, data[plant][-1])
 
     rv += "\n\n"
     rv += str(data.tail())
