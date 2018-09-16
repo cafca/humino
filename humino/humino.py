@@ -40,13 +40,16 @@ def predict_value(data, target):
     return timedelta(minutes=rem)
 
 def time_remaining(data, col):
+    target = config.PLANTS[col][1]
     try:
-        left = predict_value(data[data[col].notnull()][col], config.PLANTS[col][1]).days
+        left = predict_value(data[data[col].notnull()][col], target).days
     except ValueError:
         return "n/a"
     else:
         if left > 0:
             return "{} days".format(str(left))
+        elif data[col].iloca[-1] <= target:
+            return "dry"
         else:
             return "wet"
     
