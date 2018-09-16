@@ -48,7 +48,7 @@ def time_remaining(data, col):
     else:
         if left > 0:
             return "{} days".format(str(left))
-        elif data[col].iloca[-1] <= target:
+        elif data[col].iloc[-1] <= target:
             return "dry"
         else:
             return "wet"
