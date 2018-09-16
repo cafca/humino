@@ -72,14 +72,12 @@ def make_plot(data):
 
 def status_message(data):
     rv = "Current estimates\n"
-    rv += datetime.now().isoformat()
+    rv += datetime.now().strftime("%m-%d %H:%m")
+    rv += "\n\n"
     vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
     for plant, rem in sorted(vals, key=lambda tup: tup[1]):
         rv += "  {:<16}{} ({:.2f}%)\n".format(
             config.NAMES[int(plant)], rem, data[plant][-1])
-
-    rv += "\n\n"
-    rv += str(data.tail())
 
     return rv
     
