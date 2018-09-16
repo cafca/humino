@@ -83,7 +83,7 @@ if __name__ == "__main__":
     raw = database.read_data()
     data = raw_to_hum(raw)
     status = status_message(data)
-    with open("status.txt") as f:
+    with open("status.txt", "w") as f:
         f.write(status)
     logging.info(status)
     make_plot(data)

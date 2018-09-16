@@ -20,12 +20,14 @@ logger.addHandler(handler)
 
 
 def start(bot, update):
+    logger.info("Linking to {}".format(update.message.chat_id))
     update.message.reply_text("Hello\nWill send you plots daily at 9.00 am.")
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
-def measure(bot, update, error):
+def measure(bot, update):
+    logger.info("Sending measurements")
     with open("/home/pi/humino/humino/status.txt") as f:
         status = f.read()
 
@@ -36,6 +38,7 @@ def measure(bot, update, error):
 
 
 if __name__ == '__main__':
+    logger.info("Starting bot")
     updater = Updater(config.TELEGRAM_API_TOKEN)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
