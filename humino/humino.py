@@ -72,7 +72,7 @@ def make_plot(data):
 
 def status_message(data):
     rv = "Current estimates\n"
-    rv += datetime.now().strftime("%m-%d %H:%m")
+    rv += datetime.now().strftime("%m-%d %H:%M")
     rv += "\n\n"
     vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
     for plant, rem in sorted(vals, key=lambda tup: tup[1]):
