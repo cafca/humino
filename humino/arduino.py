@@ -32,7 +32,8 @@ def read_serial():
     while True:
         yield ser.readline().decode('ascii').strip()
 
-if __name__ == "__main__":
+
+def run():
     try:
         for line in read_serial():
             msg = process_line(line)
@@ -43,3 +44,7 @@ if __name__ == "__main__":
                     database.store_measurements(plant, msg[i + 1], dt)
     except KeyboardInterrupt:
         logging.info("Closing serial monitor")
+
+
+if __name__ == "__main__":
+    run()

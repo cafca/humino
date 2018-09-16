@@ -21,7 +21,7 @@ logger.addHandler(handler)
 
 def start(bot, update):
     logger.info("Linking to {}".format(update.message.chat_id))
-    update.message.reply_text("Hello\nWill send you plots daily at 9.00 am.")
+    update.message.reply_text("Hello.")
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
@@ -36,8 +36,7 @@ def measure(bot, update):
     with open("/home/pi/humino/humino/plot.png", "rb") as f:
         bot.send_photo(chat_id=update.message.chat_id, photo=f)
 
-
-if __name__ == '__main__':
+def run():
     logger.info("Starting bot")
     updater = Updater(config.TELEGRAM_API_TOKEN)
     dp = updater.dispatcher
@@ -45,4 +44,9 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler('measure', measure))
     dp.add_error_handler(error)
     updater.start_polling()
+    return updater
+
+
+if __name__ == '__main__':
+    updater = run()
     updater.idle()
