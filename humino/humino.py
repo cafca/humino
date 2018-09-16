@@ -18,11 +18,11 @@ logging.basicConfig(level=logging.DEBUG)
 def raw_to_hum(raw):
     def convert_raw_values(v):
         return (1023 - v) / 10.23
-    return raw.resample('1h').mean().reindex().apply(convert_raw_values)
+    return raw.resample('15min').mean().reindex(method='nearest').apply(convert_raw_values)
 
 
 def predict_value(data, target):
-    offset = -24
+    offset = -12 * 4  # should come out as 24h when multiplied with resample val
     step_width = 5
 
     if len(data.index) < -1 * offset:
