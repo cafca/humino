@@ -38,7 +38,7 @@ void loop() {
   // dataString will contain each measurement in CSV format
   dataString = "";
   dataString += dt();
-  for (int sensorPin = A0; sensorPin <= A3; sensorPin++) {
+  for (int sensorPin = A0; sensorPin <= A4; sensorPin++) {
     output_value = analogRead(sensorPin);
     dataString += ',';
     dataString += output_value;

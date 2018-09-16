@@ -5,6 +5,7 @@ import logging
 import serial
 import database
 import config
+from datetime import datetime
 
 # Plant IDs in the order they are connected to the Arduino
 
@@ -40,7 +41,7 @@ def run():
         for line in read_serial():
             msg = process_line(line)
             if msg:
-                dt = msg[0]
+                dt = datetime.now().isoformat()
                 for i, plant in enumerate(config.PLANTS_CONNECTED):
                     logging.debug("{}: plant {} value {}".format(msg, plant, msg[i+1]))
                     database.store_measurements(plant, msg[i + 1], dt)
