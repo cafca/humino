@@ -41,7 +41,7 @@ def predict_value(data, target):
 
 def time_remaining(data, col):
     try:
-        left = predict_value(data[data[col].notnull()][col], 40).days
+        left = predict_value(data[data[col].notnull()][col], config.PLANTS[col][1]).days
     except ValueError:
         return "n/a"
     else:
@@ -77,7 +77,7 @@ def status_message(data):
     vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
     for plant, rem in sorted(vals, key=lambda tup: tup[1]):
         rv += "  {:<16}{} ({:.2f}%)\n".format(
-            config.NAMES[int(plant)], rem, data[plant][-1])
+            config.PLANTS[int(plant)][0], rem, data[plant][-1])
 
     return rv
     

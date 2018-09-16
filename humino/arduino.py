@@ -41,8 +41,8 @@ def run():
             msg = process_line(line)
             if msg:
                 dt = msg[0]
-                for i, plant in enumerate(config.PLANTS):
-                    logging.info("{}: plant {} value {}".format(msg, plant, msg[i+1]))
+                for i, plant in enumerate(config.PLANTS_CONNECTED):
+                    logging.debug("{}: plant {} value {}".format(msg, plant, msg[i+1]))
                     database.store_measurements(plant, msg[i + 1], dt)
     except KeyboardInterrupt:
         logging.info("Closing serial monitor")
