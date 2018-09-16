@@ -8,8 +8,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from sklearn import linear_model
-from datetime import timedelta
+from datetime import timedelta, datetime
 import database
+import config
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -70,10 +71,14 @@ def make_plot(data):
 
 def status_message(data):
     rv = "Current estimates\n"
+    rv += datetime.now().isoformat()
     vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
     for plant, rem in sorted(vals, key=lambda tup: tup[1]):
         rv += "  {:<16}{} ({:.2f}%)\n".format(
             database.NAMES[int(plant)], rem, data[plant][-1])
+
+    rv += "\n\n"
+    rv += str(data.tail())
 
     return rv
     
@@ -83,8 +88,8 @@ if __name__ == "__main__":
     raw = database.read_data()
     data = raw_to_hum(raw)
     status = status_message(data)
-    with open("status.txt", "w") as f:
+    with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:
         f.write(status)
     logging.info(status)
     make_plot(data)
-    plt.savefig('plot.png')
+    plt.savefig(os.path.join(config.OUT_FOLDER, 'plot.png'))

@@ -3,13 +3,14 @@
 import logging
 import serial
 import database
+import config
 
 # Plant IDs in the order they are connected to the Arduino
-PLANTS = [0, 1, 2, 3]
+
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    filename='/home/pi/humino/arduino_serial.log',
+                    filename=os.path.join(config.OUT_FOLDER, 'arduino_serial.log'),
                     filemode='w')
 
 def process_line(line):
@@ -28,7 +29,7 @@ def process_line(line):
 
 def read_serial():
     logging.info("Connecting to Arduino...")
-    ser = serial.Serial('/dev/ttyACM0', 9600)
+    ser = serial.Serial(config.SERIAL_DEVICE, 9600)
     while True:
         yield ser.readline().decode('ascii').strip()
 
@@ -39,7 +40,7 @@ def run():
             msg = process_line(line)
             if msg:
                 dt = msg[0]
-                for i, plant in enumerate(PLANTS):
+                for i, plant in enumerate(config.PLANTS):
                     logging.info("{}: plant {} value {}".format(msg, plant, msg[i+1]))
                     database.store_measurements(plant, msg[i + 1], dt)
     except KeyboardInterrupt:

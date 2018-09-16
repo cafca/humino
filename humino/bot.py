@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import logging
+import os
 from telegram.ext import Updater, CommandHandler, MessageHandler
 import config
 
@@ -28,12 +29,12 @@ def error(bot, update, error):
 
 def measure(bot, update):
     logger.info("Sending measurements")
-    with open("/home/pi/humino/humino/status.txt") as f:
+    with open(os.path.join(config.OUT_FOLDER, "status.txt")) as f:
         status = f.read()
 
     update.message.reply_text(status)
     
-    with open("/home/pi/humino/humino/plot.png", "rb") as f:
+    with open(os.path.join(config.OUT_FOLDER, "plot.png"), "rb") as f:
         bot.send_photo(chat_id=update.message.chat_id, photo=f)
 
 def run():
