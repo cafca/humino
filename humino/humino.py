@@ -54,7 +54,7 @@ def time_remaining(data, plant):
         else:
             msg = "wet"
     
-    return (plants, left, msg)
+    return (plant, left, msg)
     
     
 #for col in data.columns:
