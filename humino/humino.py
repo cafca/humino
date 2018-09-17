@@ -39,19 +39,22 @@ def predict_value(data, target):
     rem = -1 * step_width * ((y[-1] - target) / regr.coef_[0])[0]
     return timedelta(minutes=rem)
 
-def time_remaining(data, col):
-    target = config.PLANTS[col][1]
+def time_remaining(data, plant):
+    target = config.PLANTS[plant][1]
     try:
-        left = predict_value(data[data[col].notnull()][col], target).days
+        left = predict_value(data[data[plant].notnull()][plant], target).days
     except ValueError:
-        return "n/a"
+        left = -1
+        msg = "n/a"
     else:
         if left > 0:
-            return "{} days".format(str(left))
-        elif data[col].iloc[-1] <= target:
-            return "dry"
+            msg = "{} days".format(str(left))
+        elif data[plant].iloc[-1] <= target:
+            msg = "dry"
         else:
-            return "wet"
+            msg = "wet"
+    
+    return (plants, left, msg)
     
     
 #for col in data.columns:
@@ -77,8 +80,8 @@ def status_message(data):
     rv = "Current estimates\n"
     rv += datetime.now().strftime("%m-%d %H:%M")
     rv += "\n\n"
-    vals = [(plant, time_remaining(data, plant)) for plant in data.columns]
-    for plant, rem in sorted(vals, key=lambda tup: tup[1]):
+    vals = [time_remaining(data, plant) for plant in data.columns]
+    for plant, val, rem in sorted(vals, key=lambda tup: tup[1]):
         rv += "  {:<16}{} ({:.2f}%)\n".format(
             config.PLANTS[int(plant)][0], rem, data[plant][-1])
 
