@@ -18,25 +18,25 @@ logging.basicConfig(level=logging.DEBUG)
 def raw_to_hum(raw):
     def convert_raw_values(v):
         return (1023 - v) / 10.23
-    return raw.resample('15min').mean().reindex(method='nearest').apply(convert_raw_values)
+    return raw.resample('{}min'.format(config.STEP)).mean().reindex(method='nearest').apply(convert_raw_values)
 
 
 def predict_value(data, target):
     offset = -12 * 4  # should come out as 24h when multiplied with resample val
-    step_width = 5
 
     if len(data.index) < -1 * offset:
         raise ValueError("Not enough data to predict")
 
     y = data.values.reshape(-1, 1)[offset:]
     index_from_offset = data.index -  data.index[offset]
-    x = (index_from_offset / 300000000000)[offset:] \
+
+    x = (index_from_offset / (config.STEP * 60 * 1000 * 1000 * 1000))[offset:] \
         .values.reshape(-1, 1).astype('int')
 
     regr = linear_model.LinearRegression()
     regr.fit(x, y)
     
-    rem = -1 * step_width * ((y[-1] - target) / regr.coef_[0])[0]
+    rem = -1 * config.STEP * ((y[-1] - target) / regr.coef_[0])[0]
     return timedelta(minutes=rem)
 
 def time_remaining(data, plant):
