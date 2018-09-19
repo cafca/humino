@@ -10,7 +10,7 @@ from datetime import datetime
 # Plant IDs in the order they are connected to the Arduino
 
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s',
                     filename=os.path.join(config.OUT_FOLDER, 'arduino_serial.log'),
                     filemode='w')
@@ -23,9 +23,9 @@ def process_line(line):
     msg = line[line.index(" ") + 1:]
 
     if kind == "status":
-        logging.debug("Arduino: {}".format(msg))
+        logging.info("Arduino: {}".format(msg))
     elif kind == "measurement":
-        logging.debug("Measured {}".format(msg))
+        logging.info("Measured {}".format(msg))
         rv = msg.split(",")
     return rv
 
@@ -41,6 +41,7 @@ def run():
         for line in read_serial():
             msg = process_line(line)
             if msg:
+                logging.info("Received {}".format(msg))
                 dt = datetime.now().isoformat()
                 for i, plant in enumerate(config.PLANTS_CONNECTED):
                     logging.debug("{}: plant {} value {}".format(msg, plant, msg[i+1]))

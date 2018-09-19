@@ -6,11 +6,11 @@ from telegram.ext import Updater, CommandHandler, MessageHandler
 import config
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # create a file handler 
 handler = logging.FileHandler('humino_bot.log')
-handler.setLevel(logging.DEBUG)
+handler.setLevel(logging.INFO)
 
 # create a logging format
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -39,7 +39,10 @@ def measure(bot, update):
 
 def run():
     logger.info("Starting bot")
-    updater = Updater(config.TELEGRAM_API_TOKEN)
+    args = {
+        timeout = 
+    }
+    updater = Updater(config.TELEGRAM_API_TOKEN, request_kwargs=args)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('measure', measure))

@@ -18,11 +18,14 @@ logging.basicConfig(level=logging.DEBUG)
 def raw_to_hum(raw):
     def convert_raw_values(v):
         return (1023 - v) / 10.23
-    return raw.resample('{}min'.format(config.STEP)).mean().reindex(method='nearest').apply(convert_raw_values)
+    return raw \
+        .resample('{}min'.format(config.STEP)).mean() \
+        .reindex(method='nearest') \
+        .apply(convert_raw_values)
 
 
 def predict_value(data, target):
-    offset = -12 * 4  # should come out as 24h when multiplied with resample val
+    offset = -24 * (60 / config.STEP)  # should come out as 24h when multiplied with resample val
 
     if len(data.index) < -1 * offset:
         raise ValueError("Not enough data to predict")
@@ -62,7 +65,7 @@ def time_remaining(data, plant):
 
 def make_plot(data):
     date_format = mdates.DateFormatter('%m-%d')
-    date_format = mdates.DateFormatter('%m-%d\n%H:%M')
+    # date_format = mdates.DateFormatter('%m-%d\n%H:%M')
 
     sns.set()
     fig1, ax1 = plt.subplots()
