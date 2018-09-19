@@ -39,10 +39,7 @@ def measure(bot, update):
 
 def run():
     logger.info("Starting bot")
-    args = {
-        timeout = 
-    }
-    updater = Updater(config.TELEGRAM_API_TOKEN, request_kwargs=args)
+    updater = Updater(config.TELEGRAM_API_TOKEN)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('measure', measure))
