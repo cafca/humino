@@ -13,7 +13,7 @@ from datetime import timedelta, datetime
 import database
 import config
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 def raw_to_hum(raw):
     def convert_raw_values(v):
@@ -25,7 +25,7 @@ def raw_to_hum(raw):
 
 
 def predict_value(data, target):
-    offset = -24 * (60 / config.STEP)  # should come out as 24h when multiplied with resample val
+    offset = int(-24 * (60 / config.STEP))  # should come out as 24h when multiplied with resample val
 
     if len(data.index) < -1 * offset:
         raise ValueError("Not enough data to predict")
