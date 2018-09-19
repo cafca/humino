@@ -52,7 +52,7 @@ def import_csv(fn):
 
 
 def read_data(date_filter=None):
-    date_filter = date_filter or \ 
+    date_filter = date_filter or \
         (datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d %H:%M")
     conn = sqlite3.connect(DB_FILENAME)
     query = "SELECT * FROM humidity WHERE dt > '{}';".format(date_filter)
