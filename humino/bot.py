@@ -60,23 +60,24 @@ def notify_about_dry_plants(bot, job):
 
     for plant_id in data.columns:
         if data[plant_id][-1] is None or data[plant_id][-2] is None:
-            continue
-            
-        dry_now = data[plant_id][-1] < config.PLANTS[plant_id][1]
-        dry_before = data[plant_id][-2] < config.PLANTS[plant_id][1]
+            logging.warning('Missing data for {}'.format(config.PLANTS[plant_id][0]))
+        else:
+            dry_now = data[plant_id][-1] < config.PLANTS[plant_id][1]
+            dry_before = data[plant_id][-2] < config.PLANTS[plant_id][1]
+            watered_now = data[plant_id][-1] > (config.PLANTS[plant_id][1] + 5)
 
-        if dry_now and not dry_before:
-            text = "{} is thirsty now ({}%).".format(
-                config.PLANTS[plant_id][0], int(data[plant_id][-1]))
-            bot.send_message(chat_id=job.context, text=text)
-            logging.info("{} is dry".format(config.PLANTS[plant_id][0]))
+            if dry_now and not dry_before:
+                text = "🍂 {} is thirsty now ({}%).".format(
+                    config.PLANTS[plant_id][0], int(data[plant_id][-1]))
+                bot.send_message(chat_id=job.context, text=text)
+                logging.info("{} is dry".format(config.PLANTS[plant_id][0]))
 
-        if not dry_now and dry_before:
-            text = "{} is good again ({}%).".format(
-                config.PLANTS[plant_id][0], data[plant_id][-1])
-            bot.send_message(chat_id=job.context, text=text)
-            logging.info("{} is not dry anymore".format(
-                config.PLANTS[plant_id][0]))
+            if dry_before and watered_now:
+                text = "🌱 {} is good again ({}%).".format(
+                    config.PLANTS[plant_id][0], data[plant_id][-1])
+                bot.send_message(chat_id=job.context, text=text)
+                logging.info("{} is not dry anymore".format(
+                    config.PLANTS[plant_id][0]))
 
 def run():
     logger.info("Starting bot")
