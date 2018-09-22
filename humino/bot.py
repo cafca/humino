@@ -64,7 +64,6 @@ def notify_about_dry_plants(bot, job):
         else:
             dry_now = data[plant_id][-1] < config.PLANTS[plant_id][1]
             dry_before = data[plant_id][-2] < config.PLANTS[plant_id][1]
-            watered_now = data[plant_id][-1] > (config.PLANTS[plant_id][1] + 5)
 
             if dry_now and not dry_before:
                 text = "🍂 {} is thirsty now ({}%).".format(
@@ -72,7 +71,10 @@ def notify_about_dry_plants(bot, job):
                 bot.send_message(chat_id=job.context, text=text)
                 logging.info("{} is dry".format(config.PLANTS[plant_id][0]))
 
-            if dry_before and watered_now:
+            almost_watered_before = data[plant_id][-2] < (config.PLANTS[plant_id][1] + 5)
+            watered_now = data[plant_id][-1] > (config.PLANTS[plant_id][1] + 5)
+
+            if almost_watered_before and watered_now:
                 text = "🌱 {} is good again ({}%).".format(
                     config.PLANTS[plant_id][0], data[plant_id][-1])
                 bot.send_message(chat_id=job.context, text=text)
