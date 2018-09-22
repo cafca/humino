@@ -16,9 +16,8 @@ logging.basicConfig(level=logging.INFO,
                     filemode='w')
 
 def process_line(line):
-    # Read a line received via serial and yield measurements as list
+    # Read a line received via serial and return measurements as list
     rv = None
-    # import pdb;pdb.set_trace()
     kind = line[:line.index(" ")]
     msg = line[line.index(" ") + 1:]
 
