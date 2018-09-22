@@ -54,7 +54,7 @@ def toggle_notifications(bot, update, job_queue):
             chat_id=update.message.chat_id, text='Notifications disabled')
 
 def notify_about_dry_plants(bot, job):
-    logging.debug('Checking hum for notifications')
+    logging.info('Running notifications job')
     raw = database.read_data(days=1)
     data = humino.raw_to_hum(raw)
 
