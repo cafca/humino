@@ -40,7 +40,6 @@ def run():
         for line in read_serial():
             msg = process_line(line)
             if msg:
-                logging.info("Received {}".format(msg))
                 dt = datetime.now().isoformat()
                 for i, plant in enumerate(config.PLANTS_CONNECTED):
                     logging.debug("{}: plant {} value {}".format(msg, plant, msg[i+1]))
