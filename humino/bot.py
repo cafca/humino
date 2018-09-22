@@ -42,7 +42,7 @@ def measure(bot, update):
 def toggle_notifications(bot, update, job_queue):
     if (len(job_queue.jobs()) == 0):
         job_queue.run_repeating(notify_about_dry_plants, 
-            interval=config.STEP, first=0, context=update.message.chat_id)
+            interval=config.STEP * 60, first=0, context=update.message.chat_id)
         logging.info("Notifications enabled for chat {}".format(update.message.chat_id))
         bot.send_message(
             chat_id=update.message.chat_id, text='Notifications enabled')
@@ -59,12 +59,15 @@ def notify_about_dry_plants(bot, job):
     data = humino.raw_to_hum(raw)
 
     for plant_id in data.columns:
+        if data[plant_id][-1] is None or data[plant_id][-2] is None:
+            continue
+            
         dry_now = data[plant_id][-1] < config.PLANTS[plant_id][1]
         dry_before = data[plant_id][-2] < config.PLANTS[plant_id][1]
 
         if dry_now and not dry_before:
             text = "{} is thirsty now ({}%).".format(
-                config.PLANTS[plant_id][0], data[plant_id][-1])
+                config.PLANTS[plant_id][0], int(data[plant_id][-1]))
             bot.send_message(chat_id=job.context, text=text)
             logging.info("{} is dry".format(config.PLANTS[plant_id][0]))
 
