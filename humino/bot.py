@@ -84,7 +84,7 @@ def notify_about_dry_plants(bot, job):
 
             if almost_watered_before and watered_now:
                 text = "🌱 {} is good again ({}%).".format(
-                    config.PLANTS[plant_id][0], data[plant_id][-1])
+                    config.PLANTS[plant_id][0], int(data[plant_id][-1]))
                 bot.send_message(chat_id=job.context, text=text)
                 logging.info("{} is not dry anymore".format(
                     config.PLANTS[plant_id][0]))
