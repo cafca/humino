@@ -13,6 +13,7 @@ DB_FILENAME = os.path.join(config.OUT_FOLDER, "db.sqlite")
 
 logging.basicConfig(level=logging.INFO)
 
+
 def init_db():
     logging.info("Init db..")
     conn = sqlite3.connect(DB_FILENAME)
@@ -26,7 +27,8 @@ def init_db():
     c.execute(CREATE_TABLES)
     conn.commit()
     conn.close()
-    
+
+
 def import_csv(fn):
     raw = pd.read_csv(fn, index_col=0, parse_dates=True)
 
@@ -36,9 +38,11 @@ def import_csv(fn):
         measurement = raw.iloc[i]
         dt = measurement.name
         for plant_id, col in enumerate(raw.columns):
-            val = int(measurement[col]) if not np.isnan(measurement[col]) else None
+            val = int(measurement[col]) if not np.isnan(
+                measurement[col]) else None
             values.append((plant_id, val, dt.isoformat()))
-        if i % 10000 == 0: print("{} / {}".format(i, len(raw)))
+        if i % 10000 == 0:
+            print("{} / {}".format(i, len(raw)))
 
     print("Importing {} values".format(len(values)))
 
@@ -52,7 +56,8 @@ def import_csv(fn):
 
 
 def read_data(days=5):
-    date_filter = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d %H:%M")
+    date_filter = (datetime.now() - timedelta(days=days)
+                   ).strftime("%Y-%m-%d %H:%M")
     conn = sqlite3.connect(DB_FILENAME)
     query = "SELECT * FROM humidity WHERE dt > '{}';".format(date_filter)
     data = pd.read_sql_query(query, conn)
@@ -61,8 +66,10 @@ def read_data(days=5):
     data.index = pd.to_datetime(data.index)
     return data
 
+
 def read_data_csv(fn):
     return pd.read_csv(fn, index_col=0, parse_dates=True)
+
 
 def store_measurements(plant, value, dt):
     conn = sqlite3.connect(DB_FILENAME)

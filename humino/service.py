@@ -9,5 +9,5 @@ if __name__ == "__main__":
 
     # Start arduino service
     arduino.run()
-    
+
     updater.idle()

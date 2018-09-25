@@ -12,8 +12,10 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    filename=os.path.join(config.OUT_FOLDER, 'arduino_serial.log'),
+                    filename=os.path.join(
+                        config.OUT_FOLDER, 'arduino_serial.log'),
                     filemode='w')
+
 
 def process_line(line):
     # Read a line received via serial and return measurements as list
@@ -27,6 +29,7 @@ def process_line(line):
         logging.info("Measured {}".format(msg))
         rv = msg.split(",")
     return rv
+
 
 def read_serial():
     logging.info("Connecting to Arduino...")
@@ -42,7 +45,8 @@ def run():
             if msg:
                 dt = datetime.now().isoformat()
                 for i, plant in enumerate(config.PLANTS_CONNECTED):
-                    logging.debug("{}: plant {} value {}".format(msg, plant, msg[i+1]))
+                    logging.debug("{}: plant {} value {}".format(
+                        msg, plant, msg[i + 1]))
                     database.store_measurements(plant, msg[i + 1], dt)
     except KeyboardInterrupt:
         logging.info("Closing serial monitor")

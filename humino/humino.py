@@ -1,19 +1,22 @@
 
 # coding: utf-8
 
-import os
 import logging
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+import os
+from datetime import datetime, timedelta
+
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from sklearn import linear_model
-from datetime import timedelta, datetime
-import database
+
 import config
+import database
 
 logging.basicConfig(level=logging.INFO)
+
 
 def raw_to_hum(raw):
     def convert_raw_values(v):
@@ -25,22 +28,24 @@ def raw_to_hum(raw):
 
 
 def predict_value(data, target):
-    offset = int(-24 * (60 / config.STEP))  # should come out as 24h when multiplied with resample val
+    # should come out as 24h when multiplied with resample val
+    offset = int(-24 * (60 / config.STEP))
 
     if len(data.index) < -1 * offset:
         raise ValueError("Not enough data to predict")
 
     y = data.values.reshape(-1, 1)[offset:]
-    index_from_offset = data.index -  data.index[offset]
+    index_from_offset = data.index - data.index[offset]
 
     x = (index_from_offset / (config.STEP * 60 * 1000 * 1000 * 1000))[offset:] \
         .values.reshape(-1, 1).astype('int')
 
     regr = linear_model.LinearRegression()
     regr.fit(x, y)
-    
+
     rem = -1 * config.STEP * ((y[-1] - target) / regr.coef_[0])[0]
     return timedelta(minutes=rem)
+
 
 def time_remaining(data, plant):
     target = config.PLANTS[plant][1]
@@ -56,12 +61,9 @@ def time_remaining(data, plant):
             msg = "dry"
         else:
             msg = "wet"
-    
+
     return (plant, left, msg)
-    
-    
-#for col in data.columns:
-#    print(col, predict_value(data[data[col].notnull()][col], 50).days, 'days')
+
 
 def make_plot(data):
     date_format = mdates.DateFormatter('%m-%d')
@@ -79,6 +81,7 @@ def make_plot(data):
         label = legend.get_texts()[i]
         label.set_text(config.PLANTS[col][0])
 
+
 def status_message(data):
     rv = "Current estimates\n"
     rv += datetime.now().strftime("%m-%d %H:%M")
@@ -89,11 +92,13 @@ def status_message(data):
             config.PLANTS[int(plant)][0], rem, data[plant][-1])
 
     return rv
-    
+
 
 if __name__ == "__main__":
+    # For reading from csv:
     # raw = database.read_data_csv("data/HUMINO.CSV")
     raw = database.read_data()
+    
     data = raw_to_hum(raw)
     status = status_message(data)
     with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:
