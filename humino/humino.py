@@ -88,8 +88,13 @@ def status_message(data):
     rv += "\n\n"
     vals = [time_remaining(data, plant) for plant in data.columns]
     for plant, val, rem in sorted(vals, key=lambda tup: tup[1]):
-        rv += "  {:<16}{} ({:.2f}%)\n".format(
-            config.PLANTS[int(plant)][0], rem, data[plant][-1])
+        status = "🌱" if data[plant][-1] >= config.PLANTS[int(
+            plant)][0] else "🍂"
+        rv += "{}  {:<16}{} ({:.2f}%)\n".format(
+            status,
+            config.PLANTS[int(plant)][0],
+            rem,
+            data[plant][-1])
 
     return rv
 
@@ -98,7 +103,7 @@ if __name__ == "__main__":
     # For reading from csv:
     # raw = database.read_data_csv("data/HUMINO.CSV")
     raw = database.read_data()
-    
+
     data = raw_to_hum(raw)
     status = status_message(data)
     with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:

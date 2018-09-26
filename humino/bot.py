@@ -2,7 +2,9 @@
 
 import logging
 import os
-from telegram.ext import Updater, CommandHandler, MessageHandler
+
+from telegram.ext import CommandHandler, MessageHandler, Updater
+
 import config
 import database
 import humino
@@ -73,7 +75,7 @@ def notify_about_dry_plants(bot, job):
             dry_before = data[plant_id][-2] < config.PLANTS[plant_id][1]
 
             if dry_now and not dry_before:
-                text = "🌱 {} is thirsty now ({}%).".format(
+                text = "💧 {} is thirsty now ({}%).".format(
                     config.PLANTS[plant_id][0], int(data[plant_id][-1]))
                 bot.send_message(chat_id=job.context, text=text)
                 logging.info("{} is dry".format(config.PLANTS[plant_id][0]))
