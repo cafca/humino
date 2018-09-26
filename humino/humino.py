@@ -89,7 +89,7 @@ def status_message(data):
     vals = [time_remaining(data, plant) for plant in data.columns]
     for plant, val, rem in sorted(vals, key=lambda tup: tup[1]):
         status = "🌱" if data[plant][-1] >= config.PLANTS[int(
-            plant)][0] else "🍂"
+            plant)][1] else "🍂"
         rv += "{}  {:<16}{} ({:.2f}%)\n".format(
             status,
             config.PLANTS[int(plant)][0],
