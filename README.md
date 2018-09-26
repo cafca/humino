@@ -1,8 +1,10 @@
 # HUMINO
 
-Monitor soil humidity using a Raspberry Pi, an Arduino and some soil humidity sensors
+A Telegram bot running on a Raspberry Pi that uses a connected Arduino and some
+soil humidity sensors to monitor your plants and sends you notifications when 
+they need to be watered.
 
-![](plot.png)
+![](screen.png)
 
 Read my blog post about this project [here](https://blog.vincentahrend.com/posts/humino/)
 
