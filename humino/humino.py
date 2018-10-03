@@ -86,8 +86,9 @@ def status_message(data):
     rv = "Current estimates\n"
     rv += datetime.now().strftime("%m-%d %H:%M")
     rv += "\n\n"
-    vals = [time_remaining(data, plant) for plant in data.columns]
-    for plant, val, rem in sorted(vals, key=lambda tup: tup[1]):
+    vals = [time_remaining(data, plant)
+            for plant in data.columns if not np.isnan(data[plant][-1])]
+    for plant, _, rem in sorted(vals, key=lambda tup: tup[1]):
         status = "🌱" if data[plant][-1] >= config.PLANTS[int(
             plant)][1] else "🍂"
         rv += "{}  {:<16}{} ({:.2f}%)\n".format(
