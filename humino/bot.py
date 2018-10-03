@@ -44,7 +44,15 @@ def measure(bot, update):
     with open(os.path.join(config.OUT_FOLDER, "plot.png"), "rb") as f:
         bot.send_photo(chat_id=update.message.chat_id, photo=f)
 
-def toggle_notifications_command(bot, update, job_queue):
+
+def enable_notifications(job_queue, chat_id):
+    job_queue.run_repeating(notify_about_dry_plants,
+        interval=config.STEP * 60, first=0, context=chat_id)
+    logging.info("Notifications enabled for chat {}".format(
+        update.message.chat_id))
+
+
+def toggle_notifications(bot, update, job_queue):
     if (len(job_queue.jobs()) == 0):
         enable_notifications(job_queue, update.message.chat_id)
         bot.send_message(
@@ -55,13 +63,6 @@ def toggle_notifications_command(bot, update, job_queue):
         logging.info("Notifications will be disabled after next job run")
         bot.send_message(
             chat_id=update.message.chat_id, text='Notifications disabled')
-
-
-def enable_notifications(job_queue, chat_id):
-    job_queue.run_repeating(notify_about_dry_plants,
-        interval=config.STEP * 60, first=0, context=chat_id)
-    logging.info("Notifications enabled for chat {}".format(
-        update.message.chat_id))
 
 
 def notify_about_dry_plants(bot, job):
