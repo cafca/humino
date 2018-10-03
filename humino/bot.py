@@ -48,8 +48,7 @@ def measure(bot, update):
 def enable_notifications(job_queue, chat_id):
     job_queue.run_repeating(notify_about_dry_plants,
         interval=config.STEP * 60, first=0, context=chat_id)
-    logging.info("Notifications enabled for chat {}".format(
-        update.message.chat_id))
+    logging.info("Notifications enabled for chat {}".format(chat_id))
 
 
 def toggle_notifications(bot, update, job_queue):
