@@ -9,3 +9,6 @@ PLANTS = {
     2: ('Dieffenb H', 40),
     3: ('Dieffenb B', 40)
 }
+
+STEP = 15
+CHAT_ID = None
