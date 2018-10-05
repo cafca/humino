@@ -55,7 +55,7 @@ def import_csv(fn):
     conn.close()
 
 
-def read_data(days=5):
+def read_data(days=7):
     date_filter = (datetime.now() - timedelta(days=days)
                    ).strftime("%Y-%m-%d %H:%M")
     conn = sqlite3.connect(DB_FILENAME)
