@@ -4,13 +4,13 @@
 import logging
 import os
 from datetime import datetime, timedelta
+from operator import itemgetter
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn import linear_model
 
 import config
 import database
@@ -25,44 +25,6 @@ def raw_to_hum(raw):
         .resample('{}min'.format(config.STEP)).mean() \
         .reindex(method='nearest') \
         .apply(convert_raw_values)
-
-
-def predict_value(data, target):
-    # should come out as 24h when multiplied with resample val
-    offset = int(-24 * (60 / config.STEP))
-
-    if len(data.index) < -1 * offset:
-        raise ValueError("Not enough data to predict")
-
-    y = data.values.reshape(-1, 1)[offset:]
-    index_from_offset = data.index - data.index[offset]
-
-    x = (index_from_offset / (config.STEP * 60 * 1000 * 1000 * 1000))[offset:] \
-        .values.reshape(-1, 1).astype('int')
-
-    regr = linear_model.LinearRegression()
-    regr.fit(x, y)
-
-    rem = -1 * config.STEP * ((y[-1] - target) / regr.coef_[0])[0]
-    return timedelta(minutes=rem)
-
-
-def time_remaining(data, plant):
-    target = config.PLANTS[plant][1]
-    try:
-        left = predict_value(data[data[plant].notnull()][plant], target).days
-    except ValueError:
-        left = -1
-        msg = "n/a"
-    else:
-        if left > 0:
-            msg = "{} days".format(str(left))
-        elif data[plant].iloc[-1] <= target:
-            msg = "dry"
-        else:
-            msg = "wet"
-
-    return (plant, left, msg)
 
 
 def make_plot(data):
@@ -83,19 +45,26 @@ def make_plot(data):
 
 
 def status_message(data):
-    rv = "Current estimates\n"
-    rv += datetime.now().strftime("%m-%d %H:%M")
+    rv = datetime.now().strftime("%d.%m. %H:%M")
     rv += "\n\n"
-    vals = [time_remaining(data, plant)
-            for plant in data.columns if not np.isnan(data[plant][-1])]
-    for plant, _, rem in sorted(vals, key=lambda tup: tup[1]):
-        status = "🌱" if data[plant][-1] >= config.PLANTS[int(
-            plant)][1] else "🍂"
-        rv += "{}  {:<16}{} ({:.2f}%)\n".format(
-            status,
-            config.PLANTS[int(plant)][0],
-            rem,
-            data[plant][-1])
+
+    def getProgress(plant):
+        current = data[plant][-1]
+        low = config.PLANTS[int(plant)][1]
+        high = 80.0
+        return int(100.0 * (current - low) / (high - low))
+
+    values = [(plant, getProgress(plant)) for plant in data.columns]
+
+    for plant, progress in sorted(values, key=itemgetter(1)):
+        threshold = config.PLANTS[int(plant)][1]
+        current_value = data[plant][-1]
+        status = "🌱" if current_value >= threshold else "🍂"
+        rv += "{status} {progress:2d}% {name}\n".format(
+            status=status,
+            progress=progress if progress >= 0 else 0,
+            name=config.PLANTS[int(plant)][0]
+        )
 
     return rv
 
@@ -106,7 +75,7 @@ if __name__ == "__main__":
     raw = database.read_data()
 
     data = raw_to_hum(raw)
-    status = status_message(data)
+    status = status_message2(data)
     with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:
         f.write(status)
     logging.info(status)
