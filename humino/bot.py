@@ -36,13 +36,23 @@ def error(bot, update, error):
 
 def measure(bot, update):
     logger.info("Sending measurements")
-    with open(os.path.join(config.OUT_FOLDER, "status.txt")) as f:
-        status = f.read()
+
+    raw = database.read_data()
+    data = humino.raw_to_hum(raw)
+    status = humino.status_message(data)
 
     update.message.reply_text(status)
 
-    with open(os.path.join(config.OUT_FOLDER, "plot.png"), "rb") as f:
-        bot.send_photo(chat_id=update.message.chat_id, photo=f)
+
+def graph(bot, update):
+    logger.info("Sending latest graph")
+
+    try:
+        with open(os.path.join(config.OUT_FOLDER, "plot.png"), "rb") as f:
+            bot.send_photo(chat_id=update.message.chat_id, photo=f)
+    except Exception as e:
+        logger.error(e)
+        update.message.reply_text("Error reading graph file: {}".format(e))
 
 
 def enable_notifications(job_queue, chat_id):
@@ -90,6 +100,7 @@ def run():
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('measure', measure))
+    dp.add_handler(CommandHandler('graph', graph))
     dp.add_handler(CommandHandler('notify', toggle_notifications,
                                   pass_job_queue=True))
     if config.CHAT_ID is not None:
