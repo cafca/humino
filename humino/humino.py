@@ -75,7 +75,7 @@ if __name__ == "__main__":
     raw = database.read_data()
 
     data = raw_to_hum(raw)
-    status = status_message2(data)
+    status = status_message(data)
     with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:
         f.write(status)
     logging.info(status)
