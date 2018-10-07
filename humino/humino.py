@@ -58,7 +58,8 @@ def status_message(data):
             rv = 0
         return rv
 
-    values = [(plant, getProgress(plant)) for plant in data.columns]
+    values = [(plant, getProgress(plant))
+              for plant in data.columns if not np.isnan(data[plant][-1])]
 
     for plant, progress in sorted(values, key=itemgetter(1)):
         threshold = config.PLANTS[int(plant)][1]
