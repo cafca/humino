@@ -55,7 +55,7 @@ def status_message(data):
         try:
             rv = int(100.0 * (current - low) / (high - low))
         except ValueError:
-            rv = None
+            rv = 0
         return rv
 
     values = [(plant, getProgress(plant)) for plant in data.columns]
@@ -66,7 +66,7 @@ def status_message(data):
         status = "🌱" if current_value >= threshold else "🍂"
         rv += "{status} {progress:2d}% {name}\n".format(
             status=status,
-            progress='?' if progress is None else (progress if progress >= 0 else 0),
+            progress=progress if progress >= 0 else 0,
             name=config.PLANTS[int(plant)][0]
         )
 
