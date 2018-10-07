@@ -64,7 +64,7 @@ def status_message(data):
     for plant, progress in sorted(values, key=itemgetter(1)):
         threshold = config.PLANTS[int(plant)][1]
         current_value = data[plant][-1]
-        status = "🌱" if current_value >= threshold else "🍂"
+        status = "🍂" if progress <= 0 else "🍃" if progress <= 10 else "🌱"
         rv += "{status} {progress:2d}% {name}\n".format(
             status=status,
             progress=progress if progress >= 0 else 0,
