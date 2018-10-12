@@ -9,7 +9,7 @@ from operator import itemgetter
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+import pandas as pdhumino
 import seaborn as sns
 
 import config
@@ -28,6 +28,9 @@ def raw_to_hum(raw):
 
 
 def make_plot(data):
+    if data.empty:
+        raise ValueError("The dataset is empty")
+
     date_format = mdates.DateFormatter('%m-%d')
     # date_format = mdates.DateFormatter('%m-%d\n%H:%M')
 
@@ -47,6 +50,10 @@ def make_plot(data):
 def status_message(data):
     rv = datetime.now().strftime("%d.%m. %H:%M")
     rv += "\n\n"
+
+    if data.empty:
+        rv += "There are no recorded measurements in the last 7 days"
+        return rv
 
     def getProgress(plant):
         current = data[plant][-1]
@@ -83,6 +90,12 @@ if __name__ == "__main__":
     status = status_message(data)
     with open(os.path.join(config.OUT_FOLDER, "status.txt"), "w") as f:
         f.write(status)
+
     logging.info(status)
-    make_plot(data)
-    plt.savefig(os.path.join(config.OUT_FOLDER, 'plot.png'))
+
+    try:
+        make_plot(data)
+    except ValueError as e:
+        logging.error("Error making plot: {}".format(e))
+    else:
+        plt.savefig(os.path.join(config.OUT_FOLDER, 'plot.png'))
