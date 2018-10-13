@@ -15,5 +15,4 @@ python-telegram-bot = "*"
 [dev-packages]
 "autopep8" = "*"
 
-[requires]
-python_version = "3.7"
+# Requires Python3
