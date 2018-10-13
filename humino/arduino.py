@@ -46,8 +46,8 @@ def run():
                 dt = datetime.now().isoformat()
                 for i, plant in enumerate(config.PLANTS_CONNECTED):
                     logging.debug("{}: plant {} value {}".format(
-                        msg, plant, msg[i + 1]))
-                    database.store_measurements(plant, msg[i + 1], dt)
+                        msg, plant, msg[i]))
+                    database.store_measurements(plant, msg[i], dt)
     except KeyboardInterrupt:
         logging.info("Closing serial monitor")
 
