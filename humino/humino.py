@@ -6,6 +6,11 @@ import os
 from datetime import datetime, timedelta
 from operator import itemgetter
 
+# Tell Matplotlib not to use GTK before importing pyplot on Raspberry
+if os.uname()[4].startswith('arm'):
+    import matplotlib
+    matplotlib.use('Agg')
+
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
