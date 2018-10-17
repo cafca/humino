@@ -3,8 +3,6 @@
 import os
 import logging
 import sqlite3
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 
 import config
@@ -30,6 +28,9 @@ def init_db():
 
 
 def import_csv(fn):
+    import pandas as pd
+    import numpy as np
+
     raw = pd.read_csv(fn, index_col=0, parse_dates=True)
 
     print("Reading csv..")
@@ -56,6 +57,8 @@ def import_csv(fn):
 
 
 def read_data(days=7):
+    import pandas as pd
+
     date_filter = (datetime.now() - timedelta(days=days)
                    ).strftime("%Y-%m-%d %H:%M")
     conn = sqlite3.connect(DB_FILENAME)
@@ -68,6 +71,7 @@ def read_data(days=7):
 
 
 def read_data_csv(fn):
+    import pandas as pd
     return pd.read_csv(fn, index_col=0, parse_dates=True)
 
 
