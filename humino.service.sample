@@ -1,0 +1,11 @@
+[Unit]
+Description=Humino plant monitoring
+After=multi-user.target
+
+[Service]
+Type=idle
+WorkingDirectory=/home/pi/humino/humino
+ExecStart=/home/pi/humino/.venv/bin/python /home/pi/humino/humino/service.py
+
+[Install]
+WantedBy=multi-user.target
