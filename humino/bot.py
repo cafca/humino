@@ -81,7 +81,7 @@ def notify_about_dry_plants(bot, job):
 
     for plant_id in data.columns:
         if len(data[plant_id]) < 2 or data[plant_id][-1] is None or data[plant_id][-2] is None:
-            logging.warning('Missing data for {}'.format(
+            logging.warning('Not enough or missing data for {}'.format(
                 config.PLANTS[plant_id][0]))
         else:
             dry_now = data[plant_id][-1] < config.PLANTS[plant_id][1]
