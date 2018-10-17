@@ -80,7 +80,7 @@ def notify_about_dry_plants(bot, job):
     data = humino.raw_to_hum(raw)
 
     for plant_id in data.columns:
-        if data[plant_id][-1] is None or data[plant_id][-2] is None:
+        if len(data[plant_id]) < 2 or data[plant_id][-1] is None or data[plant_id][-2] is None:
             logging.warning('Missing data for {}'.format(
                 config.PLANTS[plant_id][0]))
         else:
